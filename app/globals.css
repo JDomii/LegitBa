@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Campus Shield & Verify design tokens: maroon + gold on white, navy text. */
+@theme {
+  --color-maroon-50: #fbeef0;
+  --color-maroon-100: #f6dde1;
+  --color-maroon-200: #ebbac3;
+  --color-maroon-600: #9a1530;
+  --color-maroon-700: #7f0f26;
+  --color-maroon-800: #650c20;
+  --color-maroon-900: #4a0817;
+
+  --color-gold-100: #fbf0d3;
+  --color-gold-400: #e8b84a;
+  --color-gold-500: #d9a02a;
+
+  --color-navy-900: #14213d;
+  --color-navy-700: #2b3a55;
+  --color-navy-500: #5b6779;
+
+  --color-line: #e4e7ee;
+  --color-surface: #f6f7fa;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-navy-900);
+  font-family: var(--font-sans);
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 3px solid var(--color-gold-500);
+  outline-offset: 2px;
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.page-enter { animation: page-enter 300ms ease-out both; }
+.pop-in { animation: pop-in 350ms ease-out both; }
+
+button:not(:disabled):active { transform: scale(0.98); }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter, .pop-in { animation: none; }
+  button:not(:disabled):active { transform: none; }
+}
