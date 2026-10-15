@@ -5,6 +5,7 @@ import { FileDrop } from "@/components/FileDrop";
 import { CheckCircleIcon, FileIcon, Spinner, StampIcon } from "@/components/Icons";
 import { useDemoRole } from "@/components/RoleToggle";
 import { shortFingerprint } from "@/components/brand";
+import { RecordDetailsModal } from "@/components/RecordDetailsModal";
 import { DEMO_ROLE_HEADER, formatDate } from "@/lib/constants";
 import type { OfficialRecord } from "@/lib/types";
 
@@ -24,6 +25,7 @@ export default function StampPage() {
   const [recentRecords, setRecentRecords] = useState<OfficialRecord[]>([]);
   const [loadingRecords, setLoadingRecords] = useState(true);
   const [recordsError, setRecordsError] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<OfficialRecord | null>(null);
 
   const refreshRecords = useCallback(async () => {
     try {
@@ -276,24 +278,63 @@ export default function StampPage() {
                 <table className="mt-4 hidden w-full text-left text-sm md:table">
                   <thead>
                     <tr className="bg-surface text-xs font-bold uppercase tracking-wide text-navy-500">
+                      <th scope="col" className="px-3 py-2 w-16">Preview</th>
                       <th scope="col" className="px-3 py-2">Title</th>
                       <th scope="col" className="px-3 py-2">Date Stamped</th>
-                      <th scope="col" className="px-3 py-2">File Name</th>
+                      <th scope="col" className="px-3 py-2 text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {recentRecords.map((rec) => (
-                      <tr key={rec.id} className="border-b border-line align-top last:border-0">
-                        <td className="px-3 py-3">
-                          <p className="font-bold text-navy-900">{rec.title}</p>
-                          <code className="font-mono text-xs text-navy-500">
+                      <tr
+                        key={rec.id}
+                        className="border-b border-line align-middle last:border-0 hover:bg-surface/50 transition"
+                      >
+                        <td className="px-3 py-2.5">
+                          {rec.imageUrl ? (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedRecord(rec)}
+                              title="Click to inspect verified document"
+                              className="group relative block h-14 w-12 shrink-0 cursor-zoom-in overflow-hidden rounded-md border border-line bg-surface transition hover:ring-2 hover:ring-maroon-700"
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={rec.imageUrl}
+                                alt={rec.title}
+                                className="h-full w-full object-cover transition group-hover:scale-105"
+                              />
+                            </button>
+                          ) : (
+                            <div className="flex h-14 w-12 items-center justify-center rounded-md border border-line bg-surface text-navy-400">
+                              <FileIcon className="h-6 w-6" />
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-3 py-2.5">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedRecord(rec)}
+                            className="text-left font-bold text-navy-900 hover:text-maroon-700 transition"
+                          >
+                            {rec.title}
+                          </button>
+                          <code className="block font-mono text-[11px] text-navy-500">
                             {shortFingerprint(rec.sha256)}
                           </code>
                         </td>
-                        <td className="whitespace-nowrap px-3 py-3 text-navy-700">
+                        <td className="whitespace-nowrap px-3 py-2.5 text-xs text-navy-700">
                           {formatDate(rec.stampedAt)}
                         </td>
-                        <td className="break-all px-3 py-3 text-navy-700">{rec.fileName}</td>
+                        <td className="px-3 py-2.5 text-right">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedRecord(rec)}
+                            className="rounded-lg border border-line bg-white px-3 py-1.5 text-xs font-bold text-navy-800 transition hover:bg-surface hover:text-maroon-700"
+                          >
+                            Inspect
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -302,13 +343,33 @@ export default function StampPage() {
                 {/* Stacked cards on small screens */}
                 <ul className="mt-4 space-y-3 md:hidden">
                   {recentRecords.map((rec) => (
-                    <li key={rec.id} className="rounded-xl border border-line p-4">
-                      <p className="font-bold text-navy-900">{rec.title}</p>
-                      <p className="mt-1 text-sm text-navy-700">{formatDate(rec.stampedAt)}</p>
-                      <p className="break-all text-sm text-navy-700">{rec.fileName}</p>
-                      <code className="mt-1 block font-mono text-xs text-navy-500">
-                        {shortFingerprint(rec.sha256)}
-                      </code>
+                    <li
+                      key={rec.id}
+                      onClick={() => setSelectedRecord(rec)}
+                      className="flex cursor-pointer items-center gap-3 rounded-xl border border-line p-3 transition hover:bg-surface/60"
+                    >
+                      {rec.imageUrl ? (
+                        <div className="h-16 w-14 shrink-0 overflow-hidden rounded-md border border-line bg-white">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={rec.imageUrl}
+                            alt={rec.title}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex h-16 w-14 shrink-0 items-center justify-center rounded-md border border-line bg-surface text-navy-400">
+                          <FileIcon className="h-7 w-7" />
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold text-navy-900 truncate text-sm">{rec.title}</p>
+                        <p className="text-xs text-navy-500">{formatDate(rec.stampedAt)}</p>
+                        <code className="mt-0.5 block font-mono text-[11px] text-navy-400">
+                          {shortFingerprint(rec.sha256)}
+                        </code>
+                      </div>
+                      <span className="text-xs font-bold text-maroon-700">&rsaquo;</span>
                     </li>
                   ))}
                 </ul>
@@ -317,6 +378,13 @@ export default function StampPage() {
           </div>
         </section>
       </div>
+
+      {selectedRecord && (
+        <RecordDetailsModal
+          record={selectedRecord}
+          onClose={() => setSelectedRecord(null)}
+        />
+      )}
     </main>
   );
 }

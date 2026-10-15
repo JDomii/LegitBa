@@ -9,12 +9,16 @@ const STATUS_LABELS: Record<ReportStatus, string> = {
   reported: "Reported",
   under_review: "Under review",
   resolved: "Resolved",
+  fake: "Resolved: Fake",
+  stamped: "Resolved: Real",
 };
 
 const STATUS_STYLES: Record<ReportStatus, string> = {
   reported: "bg-maroon-100 text-maroon-800 border-maroon-200",
   under_review: "bg-amber-100 text-amber-900 border-amber-300",
   resolved: "bg-emerald-100 text-emerald-800 border-emerald-300",
+  fake: "bg-red-100 text-red-800 border-red-300",
+  stamped: "bg-emerald-100 text-emerald-800 border-emerald-300",
 };
 
 export function StatusBadge({ status }: StatusBadgeProps) {

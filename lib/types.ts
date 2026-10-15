@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 export const Sha256 = z.string().regex(/^[0-9a-f]{64}$/);
-export const ReportStatus = z.enum(["reported", "under_review", "resolved"]);
+// "fake" and "stamped" are final verdicts set by an official.
+// "stamped" can only be reached through POST /api/reports/[id]/stamp, which also
+// creates the official record.
+export const ReportStatus = z.enum(["reported", "under_review", "resolved", "fake", "stamped"]);
 
 export const OfficialRecord = z.object({
   id: z.string().uuid(),
@@ -10,6 +13,7 @@ export const OfficialRecord = z.object({
   fileName: z.string(),
   stampedBy: z.string(),
   stampedAt: z.string(), // ISO 8601
+  imageUrl: z.string().url().optional(),
 });
 
 export const Report = z.object({
@@ -33,7 +37,13 @@ export const StampResponse = z.object({ record: OfficialRecord, alreadyStamped: 
 export const RecordListResponse = z.object({ records: z.array(OfficialRecord) });
 export const ReportCreateResponse = z.object({ report: Report, alreadyReported: z.boolean() });
 export const ReportListResponse = z.object({ reports: z.array(Report) });
-export const StatusUpdateRequest = z.object({ status: ReportStatus });
+export const StatusUpdateRequest = z.object({ status: ReportStatus.exclude(["stamped"]) });
+export const StampReportRequest = z.object({ title: z.string() });
+export const StampReportResponse = z.object({
+  record: OfficialRecord,
+  report: Report,
+  alreadyStamped: z.boolean(),
+});
 
 export const ApiErrorCode = z.enum([
   "INVALID_REQUEST", // 400
@@ -58,6 +68,8 @@ export type RecordListResponse = z.infer<typeof RecordListResponse>;
 export type ReportCreateResponse = z.infer<typeof ReportCreateResponse>;
 export type ReportListResponse = z.infer<typeof ReportListResponse>;
 export type StatusUpdateRequest = z.infer<typeof StatusUpdateRequest>;
+export type StampReportRequest = z.infer<typeof StampReportRequest>;
+export type StampReportResponse = z.infer<typeof StampReportResponse>;
 export type ApiErrorCode = z.infer<typeof ApiErrorCode>;
 export type ApiError = z.infer<typeof ApiError>;
 
@@ -71,7 +83,7 @@ export type OfficialRecordRow = {
   stamped_at: string;
 };
 
-export function mapOfficialRecordRow(row: OfficialRecordRow): OfficialRecord {
+export function mapOfficialRecordRow(row: OfficialRecordRow, imageUrl?: string | null): OfficialRecord {
   return {
     id: row.id,
     sha256: row.sha256,
@@ -79,6 +91,7 @@ export function mapOfficialRecordRow(row: OfficialRecordRow): OfficialRecord {
     fileName: row.file_name,
     stampedBy: row.stamped_by,
     stampedAt: row.stamped_at,
+    imageUrl: imageUrl || undefined,
   };
 }
 

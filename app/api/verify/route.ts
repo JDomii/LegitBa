@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
+import { SIGNED_URL_TTL_SECONDS } from "@/lib/constants";
 import { getSupabaseServerClient } from "@/lib/supabaseServer";
 import {
   mapOfficialRecordRow,
@@ -36,9 +37,13 @@ export async function POST(request: Request) {
     }
 
     if (data) {
+      const { data: signedData } = await supabase.storage
+        .from("official-files")
+        .createSignedUrl(data.storage_path, SIGNED_URL_TTL_SECONDS);
+
       return NextResponse.json({
         status: "match",
-        record: mapOfficialRecordRow(data),
+        record: mapOfficialRecordRow(data, signedData?.signedUrl),
       });
     }
 
