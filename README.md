@@ -2,9 +2,9 @@
 
 *NeCCSus HackFest ’26 · Team Zero-Day*
 
-LegitBa is an official document provenance registry for campus announcements. Instead of guessing whether an image is fake, it lets anyone check whether an image is an official record: a file that an authorized office has stamped. Students and faculty can verify a memo, suspension notice or schedule in seconds, and the image never leaves their device unless they choose to report it.
+Campus announcements are especially susceptible to fast-spreading misinformation in the form of altered suspension notices, forged exam schedules, and falsified administrative memos that propagate quickly among students. The current solutions typically employ probabilistic approaches that try to detect authenticity based on confidence values, which makes them prone to false positives, false negatives, and errors. In LegitBa, this problem is solved deterministically using cryptographic hashes of SHA-256, which provides mathematically proven provenance of documents by matching their exact records in a digital format, rather than trying to guess manipulations.
 
-LegitBa is a provenance registry, not a deepfake detector. It does not use AI to decide what is real.
+It works by letting the relevant university department create an official announcement that would receive a stamp. This process involves creating a 256-bit cryptographic signature of the document, which is stored in a registry. Later, when the document is checked, its SHA-256 hash is calculated on the client side using Web Crypto API. Being characterized by the strict avalanche effect, SHA-256 generates a different 256-bit signature if even one pixel or meta-data byte is changed. Additionally, the use of such deterministic approach guarantees privacy by design since only 64 characters of the 256-bit hexadecimal signature are sent to the server.
 
 ## How it works
 
