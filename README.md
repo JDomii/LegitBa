@@ -137,7 +137,7 @@ demo-files/          files used in the live demo and their expected results
 
 * **Daniel**: Backend and Database
 * **Jian Karl**: Frontend
-* **Soma**: Specification, Seed Data, Documentation, and Pitch
+* **Amos**: Specification, Seed Data, Documentation, and Pitch
 
 ## AI Usage Declaration
 
