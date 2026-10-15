@@ -2,7 +2,9 @@ import React from "react";
 import Link from "next/link";
 import { APP_NAME, TAGLINE } from "@/lib/constants";
 import { UNIVERSITY_NAME } from "@/components/brand";
-import { CampusIllustration } from "@/components/CampusIllustration";
+// import { CampusIllustration } from "@/components/CampusIllustration";
+import Image from "next/image";
+
 import {
   ArrowRightIcon,
   SearchIcon,
@@ -38,7 +40,54 @@ const FEATURES = [
 export default function HomePage() {
   return (
     <main>
+
       {/* Hero */}
+      <section className="relative isolate overflow-hidden border-b border-line bg-white">
+        {/* Photo fills the section, anchored to the right */}
+        <Image
+          src="/images/campus-hero.jpg"
+          alt="Tarlac State University campus"
+          fill
+          priority
+          sizes="100vw"
+          className="-z-20 object-cover object-right"
+        />
+
+        {/* Desktop: white fades in from the left so text stays readable */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 hidden md:block"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #fff 0%, #fff 30%, rgba(255,255,255,0.85) 42%, rgba(255,255,255,0) 65%)",
+          }}
+        />
+        {/* Mobile: fade from the top instead, since text and photo overlap */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 md:hidden"
+          style={{
+            backgroundImage:
+              "linear-gradient(to bottom, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.9) 55%, rgba(255,255,255,0.35) 100%)",
+          }}
+        />
+
+        <div className="mx-auto flex min-h-[420px] max-w-6xl items-center px-4 py-10 sm:px-6 md:min-h-[470px] md:py-14">
+          <div className="max-w-xl">
+            <p className="text-xs font-bold uppercase tracking-widest text-maroon-700">
+              {UNIVERSITY_NAME}
+            </p>
+            <h1 className="mt-3 text-4xl font-extrabold leading-tight tracking-tight text-navy-900 sm:text-5xl">
+              {APP_NAME}
+            </h1>
+            <p className="mt-3 text-2xl font-extrabold text-maroon-700 sm:text-3xl">{TAGLINE}</p>
+            <p className="mt-4 max-w-md text-base text-navy-700 sm:text-lg">
+              Verify official announcements, check for real records, and help keep our campus informed.
+            </p>
+          </div>
+        </div>
+      </section>
+      {/* Hero
       <section className="border-b border-line bg-gradient-to-b from-white to-surface">
         <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-10 sm:px-6 md:grid-cols-2 md:py-14">
           <div>
@@ -55,7 +104,7 @@ export default function HomePage() {
           </div>
           <CampusIllustration className="mx-auto w-full max-w-lg" />
         </div>
-      </section>
+      </section> */}
 
       {/* Feature cards */}
       <section className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
